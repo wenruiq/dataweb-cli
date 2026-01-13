@@ -1,6 +1,6 @@
 import { intro, log, outro } from '@clack/prompts';
 import { getConfigPath, loadConfig } from '../core/config';
-import { initCommand } from './init';
+import { setupConfig } from './setup';
 
 interface ConfigCommandOptions {
   edit?: boolean;
@@ -29,8 +29,8 @@ export async function configCommand(
   }
 
   if (options.edit) {
-    // Interactive edit - just re-run init
-    await initCommand();
+    // Interactive edit - re-run setup
+    await setupConfig();
     return;
   }
 

@@ -3,7 +3,7 @@ import { $ } from 'bun';
 const platforms = ['darwin-arm64', 'darwin-x64']; // Start with macOS only
 
 async function build() {
-  console.log('Building dataweb-cli...\n');
+  console.log('Building dataweb...\n');
 
   // Create dist directory
   await $`mkdir -p dist`;
@@ -13,7 +13,7 @@ async function build() {
     console.log(`Building for ${platform}...`);
 
     const [os, arch] = platform.split('-');
-    const outputName = `dataweb-cli-${platform}`;
+    const outputName = `dataweb-${platform}`;
 
     try {
       await $`bun build --compile --minify --sourcemap --target=bun-${os}-${arch} src/cli.ts --outfile dist/${outputName}`;

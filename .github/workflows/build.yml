@@ -25,5 +25,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dataweb-cli-binaries
-          path: dist/dataweb-cli-*
+          name: dataweb-binaries
+          path: dist/dataweb-*

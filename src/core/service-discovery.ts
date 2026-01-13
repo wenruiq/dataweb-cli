@@ -1,4 +1,3 @@
-import { glob } from 'bun';
 import type { DatawebConfig } from '../types/config';
 import type { ServiceInfo } from '../types/service';
 
@@ -6,11 +5,19 @@ export async function discoverService(
   acronym: string,
   config: DatawebConfig,
 ): Promise<ServiceInfo | null> {
-  const pattern = `${config.backend.path}/${config.backend.servicesDir}/**/api/${acronym}/${acronym}.swagger.json`;
+  const searchPath = `${config.backend.path}/${config.backend.servicesDir}`;
 
   try {
-    const files = await Array.fromAsync(glob(pattern));
+    // Use find command instead of glob for better compatibility with compiled binaries
+    const result =
+      await Bun.$`find ${searchPath} -type f -name "${acronym}.swagger.json" -path "*/api/${acronym}/${acronym}.swagger.json"`.quiet();
 
+    const output = result.stdout.toString().trim();
+    if (!output) {
+      return null;
+    }
+
+    const files = output.split('\n').filter((f) => f.length > 0);
     if (files.length === 0) {
       return null;
     }
@@ -29,10 +36,19 @@ export async function discoverService(
 export async function discoverAllServices(
   config: DatawebConfig,
 ): Promise<ServiceInfo[]> {
-  const pattern = `${config.backend.path}/${config.backend.servicesDir}/**/*.swagger.json`;
+  const searchPath = `${config.backend.path}/${config.backend.servicesDir}`;
 
   try {
-    const files = await Array.fromAsync(glob(pattern));
+    // Use find command to locate all swagger files
+    const result =
+      await Bun.$`find ${searchPath} -type f -name "*.swagger.json" -path "*/api/*"`.quiet();
+
+    const output = result.stdout.toString().trim();
+    if (!output) {
+      return [];
+    }
+
+    const files = output.split('\n').filter((f) => f.length > 0);
     const services: ServiceInfo[] = [];
 
     for (const file of files) {

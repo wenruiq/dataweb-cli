@@ -10,20 +10,28 @@ export async function syncService(
   try {
     options.onProgress?.(service.acronym, 'Starting...');
 
+    const serviceDir = `${config.bruno.path}/${service.acronym}`;
+
     // Clean existing directory if auto-clean enabled
     if (config.sync.autoClean) {
-      const serviceDir = `${config.bruno.path}/${service.acronym}`;
       options.onProgress?.(service.acronym, 'Cleaning...');
-      await Bun.$`rm -rf ${serviceDir}`.quiet();
+      await Bun.$`rm -rf ${serviceDir}`.nothrow().quiet();
     }
 
     // Run Bruno CLI import
     options.onProgress?.(service.acronym, 'Importing...');
     const result =
-      await Bun.$`bru import openapi -s ${service.swaggerPath} -o ${config.bruno.path} -n ${service.acronym}`.quiet();
+      await Bun.$`bru import openapi -s ${service.swaggerPath} -o ${config.bruno.path} -n ${service.acronym}`.nothrow();
 
-    if (result.exitCode !== 0) {
-      throw new Error(`Bruno CLI failed: ${result.stderr.toString()}`);
+    // Check if import succeeded by verifying the collection was created
+    const collectionFile = Bun.file(`${serviceDir}/collection.bru`);
+    const collectionExists = await collectionFile.exists();
+
+    if (!collectionExists) {
+      const stderr = result.stderr.toString().trim();
+      const stdout = result.stdout.toString().trim();
+      const errorMsg = stderr || stdout || 'Bruno CLI import failed - collection not created';
+      throw new Error(errorMsg);
     }
 
     // Inject Bearer auth if enabled
@@ -34,8 +42,7 @@ export async function syncService(
 
     // Touch all .bru files to update timestamps
     options.onProgress?.(service.acronym, 'Updating timestamps...');
-    const serviceDir = `${config.bruno.path}/${service.acronym}`;
-    await Bun.$`find ${serviceDir} -name "*.bru" -exec touch {} \\;`.quiet();
+    await Bun.$`find ${serviceDir} -name "*.bru" -exec touch {} \\;`.nothrow().quiet();
 
     options.onProgress?.(service.acronym, 'Complete');
 

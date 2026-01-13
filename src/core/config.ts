@@ -3,7 +3,10 @@ import { join } from 'node:path';
 import type { DatawebConfig } from '../types/config';
 import { DEFAULT_CONFIG } from '../types/config';
 
-const CONFIG_DIR = join(homedir(), '.dataweb-cli');
+// Use XDG config directory standard
+const CONFIG_DIR = process.env.XDG_CONFIG_HOME
+  ? join(process.env.XDG_CONFIG_HOME, 'dataweb')
+  : join(homedir(), '.config', 'dataweb');
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 
 export async function getConfigPath(): Promise<string> {

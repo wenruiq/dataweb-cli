@@ -34,4 +34,4 @@ jobs:
         run: bun run build:binary
 
       - name: Test binary execution
-        run: ./dist/dataweb-cli --version
+        run: ./dist/dataweb --version

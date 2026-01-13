@@ -7,6 +7,7 @@ import {
 } from '../core/service-discovery';
 import { syncAllServices, syncService } from '../core/sync-engine';
 import type { DatawebConfig } from '../types/config';
+import { setupConfig } from './setup';
 
 interface SyncCommandOptions {
   force?: boolean;
@@ -16,10 +17,15 @@ export async function syncCommand(
   service: string,
   options: SyncCommandOptions,
 ): Promise<void> {
-  const config = await loadConfig();
+  let config = await loadConfig();
+
+  // Auto-setup if no config exists
   if (!config) {
-    log.error('No configuration found. Run: dataweb-cli init');
-    process.exit(1);
+    log.warn("No configuration found. Let's set it up!\n");
+    config = await setupConfig();
+    if (!config) {
+      process.exit(1);
+    }
   }
 
   if (service === 'all') {
