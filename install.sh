@@ -24,7 +24,7 @@ else
 fi
 
 # GitHub release URL (update with your actual repo)
-REPO="your-org/dataweb-cli"
+REPO="wenruiq/dataweb-cli"
 BINARY_NAME="dataweb-${PLATFORM}"
 DOWNLOAD_URL="https://github.com/${REPO}/releases/latest/download/${BINARY_NAME}"
 

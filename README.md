@@ -1,4 +1,4 @@
-# dataweb-cli
+# dataweb
 
 A modern CLI tool to sync Swagger/OpenAPI specifications from a backend monorepo to Bruno API collections. Built with Bun for speed and simplicity.
 
@@ -19,30 +19,39 @@ A modern CLI tool to sync Swagger/OpenAPI specifications from a backend monorepo
 
 ## Installation
 
-### Pre-built Binary (Recommended)
-
-Download the latest binary from [Releases](https://github.com/your-org/dataweb-cli/releases):
+### One-liner Install (Recommended)
 
 ```bash
-# Download for your platform
-curl -L https://github.com/your-org/dataweb-cli/releases/latest/download/dataweb-cli-darwin-arm64 -o dataweb-cli
+curl -fsSL https://raw.githubusercontent.com/wenruiq/dataweb-cli/main/install.sh | bash
+```
+
+### Manual Download
+
+Download the latest binary from [Releases](https://github.com/YOUR-ORG/dataweb/releases):
+
+```bash
+# Download for Apple Silicon
+curl -L https://github.com/YOUR-ORG/dataweb/releases/latest/download/dataweb-darwin-arm64 -o dataweb
+
+# Or for Intel Mac
+curl -L https://github.com/YOUR-ORG/dataweb/releases/latest/download/dataweb-darwin-x64 -o dataweb
 
 # Make executable
-chmod +x dataweb-cli
+chmod +x dataweb
 
-# Move to PATH (optional)
-mv dataweb-cli /usr/local/bin/
+# Move to PATH
+sudo mv dataweb /usr/local/bin/
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/your-org/dataweb-cli.git
-cd dataweb-cli
+git clone https://github.com/YOUR-ORG/dataweb.git
+cd dataweb
 bun install
 bun run build:binary
 
-# The binary will be in dist/dataweb-cli
+# The binary will be in dist/dataweb
 ```
 
 ## Quick Start
@@ -52,36 +61,37 @@ bun run build:binary
 Run the interactive setup wizard:
 
 ```bash
-dataweb-cli init
+dataweb config setup
 ```
 
 You'll be prompted for:
+
 - Backend monorepo path (e.g., `~/web/one-finance-backend`)
 - Bruno workspace path (e.g., `~/bruno/one-finance`)
 - Bruno workspace name (e.g., `one-finance`)
 - Number of parallel jobs (leave empty for auto-detection)
 - Whether to inject Bearer token authentication
 
-Configuration is saved to `~/.dataweb-cli/config.json`.
+Configuration is saved to `~/.config/dataweb/config.json`.
 
 ### 2. Sync Services
 
 Sync a single service:
 
 ```bash
-dataweb-cli sync iam
+dataweb sync iam
 ```
 
 Sync all services:
 
 ```bash
-dataweb-cli sync all
+dataweb sync all
 ```
 
 Force re-sync (clean and re-import):
 
 ```bash
-dataweb-cli sync all --force
+dataweb sync all --force
 ```
 
 ### 3. Health Check
@@ -89,10 +99,11 @@ dataweb-cli sync all --force
 Verify your setup:
 
 ```bash
-dataweb-cli doctor
+dataweb doctor
 ```
 
 This checks:
+
 - Bruno CLI installation
 - Configuration file existence
 - Backend path validity
@@ -100,14 +111,15 @@ This checks:
 
 ## Commands
 
-### `dataweb-cli init`
+### `dataweb config setup`
 
-Interactive setup wizard. Guides you through configuration and saves settings to `~/.dataweb-cli/config.json`.
+Interactive setup wizard. Guides you through configuration and saves settings to `~/.config/dataweb/config.json`.
 
 **Example:**
+
 ```bash
-$ dataweb-cli init
-┌  dataweb-cli setup
+$ dataweb config setup
+┌  dataweb setup
 │
 ◆  Checking for Bruno CLI...
 │  Bruno CLI found
@@ -130,68 +142,77 @@ $ dataweb-cli init
 ◆  Saving configuration...
 │  Configuration saved
 │
-└  Setup complete! Run: dataweb-cli sync all
+└  Setup complete! Run: dataweb sync all
 ```
 
-### `dataweb-cli sync <service>`
+### `dataweb sync <service>`
 
 Sync Swagger/OpenAPI specifications to Bruno collections.
 
 **Arguments:**
+
 - `<service>` - Service acronym (e.g., `iam`) or `all` for bulk sync
 
 **Options:**
+
 - `-f, --force` - Force re-sync (clean existing and re-import)
 
 **Examples:**
 
 ```bash
 # Sync single service
-dataweb-cli sync iam
+dataweb sync iam
 
 # Sync all services
-dataweb-cli sync all
+dataweb sync all
 
 # Force re-sync all services
-dataweb-cli sync all --force
+dataweb sync all --force
 ```
 
 **What it does:**
+
 1. Sets up Bruno workspace (bruno.json, environments)
 2. Discovers services in backend monorepo
 3. Imports OpenAPI specs using Bruno CLI
 4. Injects Bearer token authentication (if enabled)
 5. Updates file timestamps for UI refresh
 
-### `dataweb-cli config`
+### `dataweb config show`
 
-View or edit configuration.
+View current configuration.
 
 **Options:**
-- `-e, --edit` - Edit configuration interactively (re-runs init)
+
 - `-p, --path <key>` - Show specific config value
 
 **Examples:**
 
 ```bash
 # View full configuration
-dataweb-cli config
+dataweb config show
 
 # View specific value
-dataweb-cli config --path backend.path
-
-# Edit configuration
-dataweb-cli config --edit
+dataweb config show --path backend.path
 ```
 
-### `dataweb-cli doctor`
+### `dataweb config edit`
+
+Edit configuration interactively (re-runs setup wizard).
+
+```bash
+dataweb config edit
+```
+
+### `dataweb doctor`
 
 Health check for system requirements and configuration.
 
 **Example:**
+
 ```bash
-$ dataweb-cli doctor
-┌  dataweb-cli health check
+$ dataweb doctor
+┌  dataweb health check
 │
 ◆  Bruno CLI installed ✓
 ◆  Configuration file exists ✓
@@ -203,7 +224,7 @@ $ dataweb-cli doctor
 
 ## Configuration
 
-Configuration is stored at `~/.dataweb-cli/config.json`:
+Configuration is stored at `~/.config/dataweb/config.json`:
 
 ```json
 {
@@ -235,19 +256,23 @@ Configuration is stored at `~/.dataweb-cli/config.json`:
 ### Configuration Options
 
 **backend:**
+
 - `path`: Absolute path to backend monorepo
 - `servicesDir`: Directory containing services (default: `services`)
 
 **bruno:**
+
 - `path`: Absolute path to Bruno workspace
 - `workspaceName`: Name for Bruno workspace
 - `environments`: Array of environment configurations
 
 **sync:**
+
 - `parallel`: Number of parallel jobs (`null` for auto-detection)
 - `autoClean`: Delete existing service directories before sync
 
 **auth:**
+
 - `injectBearer`: Inject Bearer token authentication
 - `tokenVariable`: Variable name for auth token (default: `authToken`)
 
@@ -262,6 +287,7 @@ The CLI searches for Swagger files matching this pattern:
 ```
 
 For example:
+
 ```
 /backend/services/iam/api/iam/iam.swagger.json
 /backend/services/payments/api/payments/payments.swagger.json
@@ -311,8 +337,8 @@ The `authToken` variable is defined in environment files.
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/dataweb-cli.git
-cd dataweb-cli
+git clone https://github.com/YOUR-ORG/dataweb.git
+cd dataweb
 
 # Install dependencies
 bun install
@@ -331,24 +357,43 @@ bun run dev
 bun test
 
 # Run tests in watch mode
-bun test:watch
+bun test --watch
 
 # Lint and format
 bun run check
 bun run check:write
 bun run format
 
-# Build binary
+# Build binary (current platform)
 bun run build:binary
 
 # Build for all platforms
 bun run build
 ```
 
+### Creating a Release
+
+```bash
+# 1. Ensure all changes are committed
+git add -A && git commit -m "chore: prepare release"
+
+# 2. Create a version tag
+git tag v1.0.0
+
+# 3. Push the tag to trigger release workflow
+git push origin main --tags
+```
+
+This will:
+
+- Build binaries for darwin-arm64 and darwin-x64
+- Create a GitHub Release with the binaries attached
+- Auto-generate release notes from commits
+
 ### Project Structure
 
 ```
-dataweb-cli/
+dataweb/
 ├── src/
 │   ├── cli.ts                    # CLI entry point
 │   ├── commands/                 # Command implementations
@@ -382,6 +427,7 @@ dataweb-cli/
 **Error:** "Bruno CLI not found"
 
 **Solution:** Install Bruno CLI globally:
+
 ```bash
 npm i -g @usebruno/cli
 ```
@@ -391,6 +437,7 @@ npm i -g @usebruno/cli
 **Error:** "Path does not exist" or "Services directory not found"
 
 **Solution:** Ensure the backend path is correct and contains a `services/` directory:
+
 ```bash
 ls ~/web/one-finance-backend/services
 ```
@@ -400,6 +447,7 @@ ls ~/web/one-finance-backend/services
 **Error:** "Found 0 service(s)"
 
 **Solution:** Verify swagger files follow the expected pattern:
+
 ```
 {backend}/services/**/api/{acronym}/{acronym}.swagger.json
 ```
@@ -409,8 +457,10 @@ ls ~/web/one-finance-backend/services
 **Error:** "Bruno CLI failed"
 
 **Solution:**
+
 1. Check if the swagger file is valid JSON
 2. Try running Bruno CLI manually:
+
 ```bash
 bru import openapi -s /path/to/service.swagger.json -o ~/bruno/workspace -n service-name
 ```
