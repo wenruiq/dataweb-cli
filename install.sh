@@ -23,7 +23,7 @@ else
   exit 1
 fi
 
-# GitHub release URL (update with your actual repo)
+# GitHub release URL
 REPO="wenruiq/dataweb-cli"
 BINARY_NAME="dataweb-${PLATFORM}"
 DOWNLOAD_URL="https://github.com/${REPO}/releases/latest/download/${BINARY_NAME}"

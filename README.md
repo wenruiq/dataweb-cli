@@ -27,14 +27,14 @@ curl -fsSL https://raw.githubusercontent.com/wenruiq/dataweb-cli/main/install.sh
 
 ### Manual Download
 
-Download the latest binary from [Releases](https://github.com/YOUR-ORG/dataweb/releases):
+Download the latest binary from [Releases](https://github.com/wenruiq/dataweb-cli/releases):
 
 ```bash
 # Download for Apple Silicon
-curl -L https://github.com/YOUR-ORG/dataweb/releases/latest/download/dataweb-darwin-arm64 -o dataweb
+curl -L https://github.com/wenruiq/dataweb-cli/releases/latest/download/dataweb-darwin-arm64 -o dataweb
 
 # Or for Intel Mac
-curl -L https://github.com/YOUR-ORG/dataweb/releases/latest/download/dataweb-darwin-x64 -o dataweb
+curl -L https://github.com/wenruiq/dataweb-cli/releases/latest/download/dataweb-darwin-x64 -o dataweb
 
 # Make executable
 chmod +x dataweb
@@ -46,7 +46,7 @@ sudo mv dataweb /usr/local/bin/
 ### From Source
 
 ```bash
-git clone https://github.com/YOUR-ORG/dataweb.git
+git clone https://github.com/wenruiq/dataweb-cli.git
 cd dataweb
 bun install
 bun run build:binary
@@ -337,7 +337,7 @@ The `authToken` variable is defined in environment files.
 
 ```bash
 # Clone repository
-git clone https://github.com/YOUR-ORG/dataweb.git
+git clone https://github.com/wenruiq/dataweb-cli.git
 cd dataweb
 
 # Install dependencies
