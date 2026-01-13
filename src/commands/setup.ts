@@ -124,9 +124,9 @@ export async function setupConfig(): Promise<DatawebConfig | null> {
       path: expandTildePath(brunoPath as string),
       workspaceName: workspaceName as string,
       environments: [
-        { name: 'test', baseUrl: 'https://test.example.com' },
-        { name: 'uat', baseUrl: 'https://uat.example.com' },
-        { name: 'live', baseUrl: 'https://api.example.com' },
+        { name: 'test', baseUrl: 'https://one.finance.test.sea.com' },
+        { name: 'uat', baseUrl: 'https://one.finance.uat.sea.com' },
+        { name: 'live', baseUrl: 'https://one.finance.sea.com' },
       ],
     },
     sync: {
